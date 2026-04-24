@@ -1,0 +1,199 @@
+
+```
+
+---
+
+```html id="h2"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Gmail Phishing Detector</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#0f172a;
+color:white;
+padding:40px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:#111827;
+padding:30px;
+border-radius:16px;
+box-shadow:0 0 20px rgba(0,0,0,.4);
+}
+
+h1{
+font-size:36px;
+margin-bottom:20px;
+color:#38bdf8;
+}
+
+.section{
+margin-top:25px;
+padding:20px;
+background:#1f2937;
+border-radius:12px;
+}
+
+label{
+display:block;
+margin-bottom:8px;
+font-weight:bold;
+margin-top:12px;
+}
+
+input,textarea{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+margin-top:5px;
+font-size:16px;
+}
+
+textarea{
+height:180px;
+resize:none;
+}
+
+button{
+margin-top:15px;
+padding:12px 20px;
+border:none;
+border-radius:10px;
+background:#38bdf8;
+color:black;
+font-weight:bold;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+opacity:.9;
+}
+
+.help{
+font-size:14px;
+color:#cbd5e1;
+margin-top:10px;
+line-height:1.6;
+}
+
+.result{
+margin-top:20px;
+padding:20px;
+border-radius:12px;
+background:#0b1220;
+}
+
+.safe{
+color:#22c55e;
+}
+
+.suspicious{
+color:#f59e0b;
+}
+
+.malicious{
+color:#ef4444;
+}
+
+.small{
+font-size:14px;
+color:#94a3b8;
+margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🛡 Gmail Phishing Detector</h1>
+
+<div class="section">
+<h2>Connect Gmail</h2>
+
+<label>Gmail Address</label>
+<input type="email" id="gmail" placeholder="yourmail@gmail.com">
+
+<label>App Password</label>
+<input type="password" id="password" placeholder="16 character app password">
+
+<button onclick="connect()">Connect Gmail</button>
+
+<div class="help">
+How to create App Password:<br>
+1. Enable Google 2-Step Verification<br>
+2. Open Google Security Settings<br>
+3. Search App Passwords<br>
+4. Generate password for Mail<br>
+5. Paste here
+</div>
+
+<div class="small" id="connectStatus"></div>
+</div>
+
+<div class="section">
+<h2>Manual Email Scan</h2>
+
+<label>Paste Suspicious Email Content</label>
+<textarea id="content" placeholder="Paste email text here..."></textarea>
+
+<button onclick="scanEmail()">Scan Email</button>
+
+<div class="result" id="result">
+Waiting for scan...
+</div>
+</div>
+
+</div>
+
+<script>
+async function scanEmail(){
+try{
+let content=document.getElementById("content").value;
+
+let res=await fetch("http://127.0.0.1:8000/scan",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({content:content})
+});
+
+let data=await res.json();
+
+document.getElementById("result").innerHTML =
+"Score: "+data.score+
+"<br>Status: "+data.status+
+"<br>"+data.reasons.join("<br>");
+
+}catch(err){
+document.getElementById("result").innerHTML =
+"Error: " + err;
+}
+}
+function connect(){
+let gmail=document.getElementById("gmail").value;
+document.getElementById("connectStatus").innerHTML =
+"✅ Ready to connect Gmail account: "+gmail+
+"<br>(Backend Gmail login endpoint can be added next)";
+}
+</script>
+
+</body>
+</html>
+```
+
